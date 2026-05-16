@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تصنيف العادات الصحية | مجتبى صباح</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #070810;
+    --surface: rgba(255,255,255,0.04);
+    --surface-2: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.08);
+    --text: #f0f0f8;
+    --text-dim: rgba(240,240,248,0.45);
+    --accent: #6ee7f7;
+
+    --tier-s: #22d3a0;
+    --tier-a: #f0c040;
+    --tier-b: #f07840;
+    --tier-c: #e03855;
+
+    --shadow-glow: 0 0 30px rgba(110,231,247,0.15);
+    --radius: 14px;
+    --radius-sm: 8px;
+    --transition: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Cinematic background */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 20%, rgba(34,211,160,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 80% 80%, rgba(110,231,247,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 50% 50%, rgba(224,56,85,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  /* Noise texture */
+  body::after {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  #app { position: relative; z-index: 1; }
+
+  /* ─── HEADER ─── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(7,8,16,0.7);
+    backdrop-filter: blur(20px);
+    position: sticky; top: 0; z-index: 100;
+  }
+
+  .logo {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .logo-icon {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--tier-s), var(--accent));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 0 20px rgba(34,211,160,0.3);
+  }
+  .logo-text {
+    font-size: 18px; font-weight: 800;
+    background: linear-gradient(90deg, #fff, var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    letter-spacing: 0.5px;
+  }
+  .logo-sub { font-size: 11px; color: var(--text-dim); font-weight: 400; }
+
+  .header-controls {
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  }
+
+  .btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+  .btn:hover {
+    background: var(--surface-2);
+    border-color: rgba(255,255,255,0.18);
+    transform: translateY(-1px);
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--tier-s), var(--accent));
+    border-color: transparent; color: #070810;
+    box-shadow: 0 4px 20px rgba(34,211,160,0.25);
+  }
+  .btn-primary:hover { box-shadow: 0 6px 28px rgba(34,211,160,0.4); }
+  .btn-danger { border-color: rgba(224,56,85,0.3); }
+  .btn-danger:hover { background: rgba(224,56,85,0.15); border-color: var(--tier-c); }
+
+  /* ─── BRANDING ─── */
+  .branding {
+    text-align: center;
+    padding: 6px;
+    font-size: 12px; color: var(--text-dim); font-weight: 400;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border);
+  }
+  .branding span { color: var(--accent); font-weight: 600; }
+
+  /* ─── MAIN LAYOUT ─── */
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+    padding: 24px 32px;
+    min-height: calc(100vh - 120px);
+  }
+
+  /* ─── TIERS ─── */
+  .tiers-panel { display: flex; flex-direction: column; gap: 14px; }
+
+  .tier {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .tier.drag-over {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(110,231,247,0.2);
+  }
+
+  .tier-header {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .tier-label {
+    width: 52px; height: 52px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 900; font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 1px; flex-shrink: 0;
+  }
+  .tier[data-tier="s"] .tier-label { background: rgba(34,211,160,0.15); color: var(--tier-s); border: 1px solid rgba(34,211,160,0.3); }
+  .tier[data-tier="a"] .tier-label { background: rgba(240,192,64,0.15); color: var(--tier-a); border: 1px solid rgba(240,192,64,0.3); }
+  .tier[data-tier="b"] .tier-label { background: rgba(240,120,64,0.15); color: var(--tier-b); border: 1px solid rgba(240,120,64,0.3); }
+  .tier[data-tier="c"] .tier-label { background: rgba(224,56,85,0.15); color: var(--tier-c); border: 1px solid rgba(224,56,85,0.3); }
+
+  .tier-info { flex: 1; }
+  .tier-name-editable {
+    font-size: 15px; font-weight: 700;
+    background: transparent; border: none; outline: none;
+    color: var(--text); font-family: 'Tajawal', sans-serif;
+    width: 100%;
+    cursor: text;
+  }
+  .tier-desc { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+  .tier-count {
+    font-size: 12px; font-weight: 700; font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 1px; color: var(--text-dim);
+  }
+
+  .tier-cards {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    padding: 12px 14px;
+    min-height: 60px;
+  }
+  .tier-empty {
+    width: 100%;
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px;
+    font-size: 13px; color: var(--text-dim);
+    border: 2px dashed rgba(255,255,255,0.08);
+    border-radius: var(--radius-sm);
+    transition: border-color 0.2s;
+  }
+  .tier.drag-over .tier-empty { border-color: var(--accent); color: var(--accent); }
+
+  /* ─── HABIT CARDS ─── */
+  .card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 9px 13px;
+    cursor: grab;
+    display: flex; align-items: center; gap: 9px;
+    user-select: none;
+    transition: transform 0.2s var(--transition), box-shadow 0.2s, border-color 0.2s, opacity 0.2s;
+    animation: cardIn 0.35s var(--transition) both;
+    max-width: 220px;
+    position: relative;
+  }
+  @keyframes cardIn {
+    from { opacity: 0; transform: scale(0.85) translateY(6px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .card:hover {
+    transform: translateY(-2px) scale(1.02);
+    border-color: rgba(255,255,255,0.18);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+  .card:active { cursor: grabbing; }
+  .card.dragging {
+    opacity: 0.3;
+    transform: scale(0.95);
+  }
+  .card.ghost {
+    opacity: 0.5;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.6), 0 0 0 2px var(--accent);
+    transform: scale(1.05) rotate(-1deg);
+    transition: none;
+  }
+
+  .card[data-tier="s"] { border-color: rgba(34,211,160,0.25); }
+  .card[data-tier="a"] { border-color: rgba(240,192,64,0.25); }
+  .card[data-tier="b"] { border-color: rgba(240,120,64,0.25); }
+  .card[data-tier="c"] { border-color: rgba(224,56,85,0.25); }
+
+  .card-emoji { font-size: 18px; flex-shrink: 0; }
+  .card-name { font-size: 12.5px; font-weight: 600; line-height: 1.35; }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    display: flex; flex-direction: column; gap: 16px;
+  }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .panel-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .panel-title { font-size: 13px; font-weight: 700; letter-spacing: 0.5px; }
+
+  /* Unclassified pool */
+  .pool {
+    padding: 12px;
+    display: flex; flex-direction: column; gap: 7px;
+    max-height: 420px; overflow-y: auto;
+  }
+  .pool::-webkit-scrollbar { width: 4px; }
+  .pool::-webkit-scrollbar-track { background: transparent; }
+  .pool::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+  .pool .card { max-width: 100%; width: 100%; }
+
+  /* Add habit */
+  .add-habit {
+    padding: 12px;
+    display: flex; gap: 8px;
+  }
+  .input-field {
+    flex: 1;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 13px;
+    padding: 8px 12px;
+    outline: none;
+    transition: border-color 0.2s;
+    direction: rtl;
+  }
+  .input-field:focus { border-color: var(--accent); }
+  .input-field::placeholder { color: var(--text-dim); }
+
+  /* Stats */
+  .stats-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+  }
+  .stat-item {
+    background: var(--surface);
+    padding: 12px 14px;
+    text-align: center;
+  }
+  .stat-num { font-size: 26px; font-weight: 900; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px; }
+  .stat-label { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+  .stat-item:nth-child(1) .stat-num { color: var(--tier-s); }
+  .stat-item:nth-child(2) .stat-num { color: var(--tier-a); }
+  .stat-item:nth-child(3) .stat-num { color: var(--tier-b); }
+  .stat-item:nth-child(4) .stat-num { color: var(--tier-c); }
+
+  /* ─── PRESENTATION MODE ─── */
+  #presentationOverlay {
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(7,8,16,0.97);
+    backdrop-filter: blur(30px);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+  }
+  #presentationOverlay.active { display: flex; }
+
+  .pres-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 70% 60% at 50% 50%, rgba(110,231,247,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* ─── PRESENTATION TOP BAR ─── */
+  .pres-topbar {
+    position: absolute; top: 0; left: 0; right: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 28px;
+    z-index: 10;
+  }
+  .pres-topbar-actions { display: flex; align-items: center; gap: 10px; }
+
+  .pres-counter {
+    font-size: 13px; color: var(--text-dim); font-weight: 600; letter-spacing: 3px;
+    font-family: 'Bebas Neue', sans-serif;
+  }
+
+  .pres-icon-btn {
+    width: 36px; height: 36px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--text); border-radius: 8px;
+    font-size: 16px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; font-family: inherit;
+  }
+  .pres-icon-btn:hover {
+    background: rgba(240,192,64,0.15);
+    border-color: var(--tier-a);
+    color: var(--tier-a);
+    transform: rotate(-30deg);
+  }
+
+  .pres-close {
+    background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--text); border-radius: 8px;
+    padding: 8px 14px; font-size: 13px; font-weight: 600;
+    cursor: pointer; font-family: 'Tajawal', sans-serif;
+    transition: all 0.2s;
+  }
+  .pres-close:hover { background: rgba(224,56,85,0.2); border-color: var(--tier-c); }
+
+  /* ─── PLACEMENT REVEAL PANEL ─── */
+  .pres-placement {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    position: relative; z-index: 1;
+    opacity: 0; transform: translateY(-10px) scale(0.96);
+    transition: opacity 0.45s ease, transform 0.45s var(--transition);
+    pointer-events: none;
+    min-height: 80px;
+  }
+  .pres-placement.visible {
+    opacity: 1; transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+
+  .placement-arrow {
+    font-size: 18px; color: var(--text-dim);
+    animation: bounceDown 1.2s ease infinite;
+  }
+  @keyframes bounceDown {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(5px); }
+  }
+
+  .placement-inner {
+    display: flex; align-items: center; gap: 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 22px;
+    backdrop-filter: blur(16px);
+    flex-wrap: wrap; justify-content: center;
+  }
+
+  .placement-tier-badge {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px; letter-spacing: 2px;
+    width: 48px; height: 48px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .placement-title {
+    font-size: 14px; font-weight: 700; color: var(--text);
+  }
+
+  .placement-members {
+    display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
+    margin-top: 4px;
+  }
+  .placement-chip {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 3px 10px;
+    font-size: 11px; color: var(--text-dim);
+    white-space: nowrap;
+  }
+  .placement-chip.current {
+    font-weight: 700;
+    color: var(--text);
+  }
+  .placement-more {
+    font-size: 11px; color: var(--text-dim); font-weight: 600;
+  }
+
+  .pres-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 24px;
+    padding: 48px 64px;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 20px;
+    text-align: center;
+    max-width: 560px; width: 90%;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+    animation: presCardIn 0.5s var(--transition);
+    position: relative; z-index: 1;
+  }
+  @keyframes presCardIn {
+    from { opacity: 0; transform: scale(0.7) translateY(30px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .pres-emoji { font-size: 72px; filter: drop-shadow(0 0 20px rgba(255,255,255,0.2)); }
+  .pres-name { font-size: 30px; font-weight: 800; line-height: 1.3; }
+  .pres-tier-badge {
+    padding: 6px 20px;
+    border-radius: 100px;
+    font-size: 12px; font-weight: 700; letter-spacing: 1px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .pres-controls {
+    display: flex; gap: 12px; align-items: center; position: relative; z-index: 1;
+  }
+  .pres-btn {
+    padding: 14px 28px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 15px; font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .pres-btn:hover { background: var(--surface); transform: translateY(-2px); }
+  .pres-btn-main {
+    background: linear-gradient(135deg, var(--tier-s), var(--accent));
+    border-color: transparent; color: #070810;
+    padding: 14px 40px; font-size: 16px;
+    box-shadow: 0 8px 24px rgba(34,211,160,0.3);
+  }
+  .pres-btn-main:hover { box-shadow: 0 12px 32px rgba(34,211,160,0.5); }
+
+  .pres-branding {
+    position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+    font-size: 12px; color: var(--text-dim); font-weight: 500; letter-spacing: 1px;
+    white-space: nowrap; z-index: 2;
+  }
+  .pres-branding span { color: var(--accent); }
+
+  /* Ripple effect on drop */
+  @keyframes ripple {
+    0% { transform: scale(0.8); opacity: 1; }
+    100% { transform: scale(2.5); opacity: 0; }
+  }
+  .ripple {
+    position: absolute; border-radius: 50%;
+    width: 40px; height: 40px; background: rgba(110,231,247,0.3);
+    animation: ripple 0.5s ease-out forwards;
+    pointer-events: none; transform-origin: center;
+  }
+
+  /* ─── NOTIFICATIONS ─── */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 24px;
+    font-size: 13px; font-weight: 600;
+    backdrop-filter: blur(20px);
+    transition: transform 0.4s var(--transition), opacity 0.4s;
+    opacity: 0; z-index: 9999;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+  /* ─── POOL EMPTY ─── */
+  .pool-empty {
+    text-align: center; padding: 24px 16px;
+    font-size: 13px; color: var(--text-dim);
+  }
+  .pool-empty-icon { font-size: 28px; margin-bottom: 8px; }
+
+  /* Pool card drop area */
+  .pool-dropzone {
+    border: 2px dashed rgba(255,255,255,0.08);
+    border-radius: var(--radius-sm);
+    min-height: 50px;
+    transition: border-color 0.2s;
+  }
+  .pool-dropzone.drag-over {
+    border-color: var(--accent);
+    background: rgba(110,231,247,0.05);
+  }
+
+  /* ─── VOTE BUTTONS ─── */
+  .vote-row {
+    display: flex; gap: 14px; align-items: stretch;
+    position: relative; z-index: 1;
+    flex-wrap: wrap; justify-content: center;
+  }
+
+  .vote-btn {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 6px;
+    padding: 16px 28px;
+    border-radius: 16px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    font-family: 'Tajawal', sans-serif;
+    transition: transform 0.25s var(--transition), box-shadow 0.25s, background 0.2s, border-color 0.2s;
+    min-width: 120px;
+    position: relative; overflow: hidden;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+  }
+  .vote-btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    opacity: 0; transition: opacity 0.2s;
+    border-radius: 14px;
+  }
+  .vote-btn:hover { transform: translateY(-4px) scale(1.04); }
+  .vote-btn:active { transform: scale(0.96); }
+
+  .vote-btn.voted {
+    transform: scale(1.08);
+    animation: votePulse 0.5s var(--transition);
+  }
+  @keyframes votePulse {
+    0%   { transform: scale(0.9); }
+    60%  { transform: scale(1.12); }
+    100% { transform: scale(1.08); }
+  }
+
+  .vote-letter {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px; letter-spacing: 2px; line-height: 1;
+    font-weight: 900;
+  }
+  .vote-label {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .vote-s { border-color: rgba(34,211,160,0.35); }
+  .vote-s .vote-letter { color: var(--tier-s); }
+  .vote-s .vote-label { color: rgba(34,211,160,0.8); }
+  .vote-s:hover, .vote-s.voted {
+    background: rgba(34,211,160,0.15);
+    border-color: var(--tier-s);
+    box-shadow: 0 8px 32px rgba(34,211,160,0.35), 0 0 0 1px rgba(34,211,160,0.2);
+  }
+
+  .vote-a { border-color: rgba(240,192,64,0.35); }
+  .vote-a .vote-letter { color: var(--tier-a); }
+  .vote-a .vote-label { color: rgba(240,192,64,0.8); }
+  .vote-a:hover, .vote-a.voted {
+    background: rgba(240,192,64,0.15);
+    border-color: var(--tier-a);
+    box-shadow: 0 8px 32px rgba(240,192,64,0.35), 0 0 0 1px rgba(240,192,64,0.2);
+  }
+
+  .vote-b { border-color: rgba(240,120,64,0.35); }
+  .vote-b .vote-letter { color: var(--tier-b); }
+  .vote-b .vote-label { color: rgba(240,120,64,0.8); }
+  .vote-b:hover, .vote-b.voted {
+    background: rgba(240,120,64,0.15);
+    border-color: var(--tier-b);
+    box-shadow: 0 8px 32px rgba(240,120,64,0.35), 0 0 0 1px rgba(240,120,64,0.2);
+  }
+
+  .vote-c { border-color: rgba(224,56,85,0.35); }
+  .vote-c .vote-letter { color: var(--tier-c); }
+  .vote-c .vote-label { color: rgba(224,56,85,0.8); }
+  .vote-c:hover, .vote-c.voted {
+    background: rgba(224,56,85,0.15);
+    border-color: var(--tier-c);
+    box-shadow: 0 8px 32px rgba(224,56,85,0.35), 0 0 0 1px rgba(224,56,85,0.2);
+  }
+
+  /* Keyboard hint badges */
+  .vote-btn::after {
+    content: attr(data-key);
+    position: absolute; top: 6px; left: 8px;
+    font-size: 10px; color: rgba(255,255,255,0.25);
+    font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px;
+  }
+  .vote-s::after { content: '1'; }
+  .vote-a::after { content: '2'; }
+  .vote-b::after { content: '3'; }
+  .vote-c::after { content: '4'; }
+
+  /* ─── FULLSCREEN NOTICE ─── */
+  .fs-badge {
+    position: fixed; top: 12px; right: 12px; z-index: 99;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 11px; color: var(--text-dim);
+    pointer-events: none;
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .fs-badge.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🏆</div>
+      <div>
+        <div class="logo-text">Habit Tier Ranking</div>
+        <div class="logo-sub">تصنيف العادات الصحية والغذائية</div>
+      </div>
+    </div>
+    <div class="header-controls">
+      <button class="btn" id="btnPresentation">🎬 عرض تقديمي</button>
+      <button class="btn" id="btnFullscreen">⛶ ملء الشاشة</button>
+      <button class="btn btn-danger" id="btnReset">↺ إعادة تعيين</button>
+    </div>
+  </header>
+
+  <!-- BRANDING -->
+  <div class="branding">أخصائي التغذية: <span>مجتبى صباح</span></div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TIERS PANEL -->
+    <div class="tiers-panel" id="tiersPanel">
+
+      <div class="tier" data-tier="s" id="tier-s">
+        <div class="tier-header">
+          <div class="tier-label">S</div>
+          <div class="tier-info">
+            <input class="tier-name-editable" value="عادات أساسية" data-tier="s">
+            <div class="tier-desc">عادات مدعومة علميًا بتأثير واضح وثابت على الصحة والتكوين</div>
+          </div>
+          <div class="tier-count" id="count-s">0</div>
+        </div>
+        <div class="tier-cards" id="cards-s">
+          <div class="tier-empty">اسحب العادات هنا</div>
+        </div>
+      </div>
+
+      <div class="tier" data-tier="a" id="tier-a">
+        <div class="tier-header">
+          <div class="tier-label">A</div>
+          <div class="tier-info">
+            <input class="tier-name-editable" value="عادات ذات تأثير محدود" data-tier="a">
+            <div class="tier-desc">عادات مفيدة لكنها ليست ضرورية للنتائج الأساسية</div>
+          </div>
+          <div class="tier-count" id="count-a">0</div>
+        </div>
+        <div class="tier-cards" id="cards-a">
+          <div class="tier-empty">اسحب العادات هنا</div>
+        </div>
+      </div>
+
+      <div class="tier" data-tier="b" id="tier-b">
+        <div class="tier-header">
+          <div class="tier-label">B</div>
+          <div class="tier-info">
+            <input class="tier-name-editable" value="عادات لا تؤثر على النتائج" data-tier="b">
+            <div class="tier-desc">عادات محايدة أو ذات تأثير هامشي جداً</div>
+          </div>
+          <div class="tier-count" id="count-b">0</div>
+        </div>
+        <div class="tier-cards" id="cards-b">
+          <div class="tier-empty">اسحب العادات هنا</div>
+        </div>
+      </div>
+
+      <div class="tier" data-tier="c" id="tier-c">
+        <div class="tier-header">
+          <div class="tier-label">C</div>
+          <div class="tier-info">
+            <input class="tier-name-editable" value="عادات خاطئة" data-tier="c">
+            <div class="tier-desc">عادات شائعة لكنها غير مدعومة علميًا أو ضارة</div>
+          </div>
+          <div class="tier-count" id="count-c">0</div>
+        </div>
+        <div class="tier-cards" id="cards-c">
+          <div class="tier-empty">اسحب العادات هنا</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+      <!-- Stats -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">📊 الإحصائيات</div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-item"><div class="stat-num" id="stat-s">0</div><div class="stat-label">أساسية</div></div>
+          <div class="stat-item"><div class="stat-num" id="stat-a">0</div><div class="stat-label">محدودة</div></div>
+          <div class="stat-item"><div class="stat-num" id="stat-b">0</div><div class="stat-label">محايدة</div></div>
+          <div class="stat-item"><div class="stat-num" id="stat-c">0</div><div class="stat-label">خاطئة</div></div>
+        </div>
+      </div>
+
+      <!-- Add habit -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">➕ إضافة عادة</div>
+        </div>
+        <div class="add-habit">
+          <input class="input-field" id="newHabitInput" placeholder="اكتب عادة جديدة..." dir="rtl">
+          <button class="btn btn-primary" id="btnAddHabit" style="padding:8px 14px;">+</button>
+        </div>
+      </div>
+
+      <!-- Pool -->
+      <div class="panel" style="flex:1">
+        <div class="panel-header">
+          <div class="panel-title">🎴 العادات غير المصنفة</div>
+          <div style="font-size:11px;color:var(--text-dim);font-weight:600;" id="poolCountLabel">0 عادة</div>
+        </div>
+        <div class="pool-dropzone" id="poolDropzone">
+          <div class="pool" id="pool"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- PRESENTATION OVERLAY -->
+<div id="presentationOverlay">
+  <div class="pres-bg" id="presBg"></div>
+
+  <!-- Top bar -->
+  <div class="pres-topbar">
+    <div class="pres-counter" id="presCounter">1 / 32</div>
+    <div class="pres-topbar-actions">
+      <button class="pres-icon-btn" id="presResetBtn" title="إعادة تعيين هذه العادة">↺</button>
+      <button class="pres-close" id="presClose">✕ إغلاق</button>
+    </div>
+  </div>
+
+  <!-- Main card -->
+  <div class="pres-card" id="presCard">
+    <div class="pres-emoji" id="presEmoji">💧</div>
+    <div class="pres-name" id="presName">العادة</div>
+    <div class="pres-tier-badge" id="presTierBadge">غير مصنفة</div>
+  </div>
+
+  <!-- Placement reveal panel — appears after voting -->
+  <div class="pres-placement" id="presPlacement">
+    <div class="placement-arrow">↓</div>
+    <div class="placement-inner" id="placementInner">
+      <div class="placement-tier-badge" id="placementBadge"></div>
+      <div class="placement-title" id="placementTitle"></div>
+      <div class="placement-members" id="placementMembers"></div>
+    </div>
+  </div>
+
+  <!-- VOTE BUTTONS -->
+  <div class="vote-row">
+    <button class="vote-btn vote-s" data-vote="s">
+      <span class="vote-letter">S</span>
+      <span class="vote-label" id="voteLabel-s">عادات أساسية</span>
+    </button>
+    <button class="vote-btn vote-a" data-vote="a">
+      <span class="vote-letter">A</span>
+      <span class="vote-label" id="voteLabel-a">تأثير محدود</span>
+    </button>
+    <button class="vote-btn vote-b" data-vote="b">
+      <span class="vote-letter">B</span>
+      <span class="vote-label" id="voteLabel-b">لا تؤثر</span>
+    </button>
+    <button class="vote-btn vote-c" data-vote="c">
+      <span class="vote-letter">C</span>
+      <span class="vote-label" id="voteLabel-c">عادات خاطئة</span>
+    </button>
+  </div>
+
+  <div class="pres-controls">
+    <button class="pres-btn" id="presShuffle">🔀 عشوائي</button>
+    <button class="pres-btn pres-btn-main" id="presNext">التالي ←</button>
+    <button class="pres-btn" id="presPrev">→ السابق</button>
+  </div>
+  <div class="pres-branding">أخصائي التغذية: <span>مجتبى صباح</span></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── DATA ───
+const HABITS = [
+  { id: 1,  name: 'المشي 8000–10000 خطوة يوميًا',               emoji: '🚶', tier: null },
+  { id: 2,  name: 'تمارين المقاومة 3–5 مرات أسبوعيًا',          emoji: '🏋️', tier: null },
+  { id: 3,  name: 'موعد ثابت للنوم والاستيقاظ',                  emoji: '🌙', tier: null },
+  { id: 4,  name: 'تناول 1.2–2 غرام بروتين/كغ يوميًا',          emoji: '🥩', tier: null },
+  { id: 5,  name: 'تناول الخضار والفواكه يوميًا',                emoji: '🥗', tier: null },
+  { id: 6,  name: 'التعرض للشمس باعتدال',                        emoji: '☀️', tier: null },
+  { id: 7,  name: 'تحضير الوجبات مسبقًا',                       emoji: '🍱', tier: null },
+  { id: 8,  name: 'تناول الطعام ببطء وتحسين الشبع',             emoji: '🍽️', tier: null },
+  { id: 9,  name: 'عجز 250–500 سعرة حرارية',                    emoji: '⚖️', tier: null },
+  { id: 10, name: 'تناول 25–35 غرام ألياف يوميًا',              emoji: '🌾', tier: null },
+  { id: 11, name: 'الالتزام بروتين يومي ثابت',                   emoji: '📅', tier: null },
+  { id: 12, name: 'الدهون الصحية باعتدال',                       emoji: '🥑', tier: null },
+  { id: 13, name: 'قطع الكاربوهيدرات بالكامل',                  emoji: '🚫', tier: null },
+  { id: 14, name: 'ارتداء النايلون للتعرق وخسارة الوزن',        emoji: '🔥', tier: null },
+  { id: 15, name: 'حمية أقل من 1000 سعرة لفترات طويلة',        emoji: '⚠️', tier: null },
+  { id: 16, name: 'استخدام حوارق الدهون',                       emoji: '💊', tier: null },
+  { id: 17, name: 'حذف الدهون بالكامل',                         emoji: '❌', tier: null },
+  { id: 18, name: 'الاعتماد على عصائر الديتوكس',                emoji: '🧃', tier: null },
+  { id: 19, name: 'استبدال السكر بستيفيا',                      emoji: '🍃', tier: null },
+  { id: 20, name: 'الميزان فقط لتقييم التقدم',                   emoji: '⚖️', tier: null },
+  { id: 21, name: 'النوم 4–5 ساعات يوميًا',                     emoji: '😴', tier: null },
+  { id: 22, name: 'اتباع أي حمية منتشرة بلا فهم علمي',         emoji: '📱', tier: null },
+  { id: 23, name: 'الاعتماد الكلي على المكملات',                emoji: '💉', tier: null },
+  { id: 24, name: 'المشدات الحرارية لحرق الدهون',               emoji: '🩹', tier: null },
+  { id: 25, name: 'Cheat Day مفتوح بلا حدود',                    emoji: '🍕', tier: null },
+  { id: 26, name: 'شرب خل التفاح "لحرق الدهون"',               emoji: '🍎', tier: null },
+  { id: 27, name: 'إزالة الغلوتين ضرورية للجميع',              emoji: '🌾', tier: null },
+  { id: 28, name: 'الوزن المثالي أهم من تكوين الجسم',           emoji: '📏', tier: null },
+  { id: 29, name: 'البذور والمكسرات بكميات غير محدودة',        emoji: '🥜', tier: null },
+  { id: 30, name: 'الاعتماد على الساونا لإنقاص الدهون',        emoji: '🧖', tier: null },
+  { id: 31, name: 'بروتين منخفض أثناء التنشيف',               emoji: '💪', tier: null },
+  { id: 32, name: 'ملح الهيمالايا بدلاً من الملح العادي',      emoji: '🧂', tier: null },
+];
+
+let habits = JSON.parse(localStorage.getItem('habits')) || JSON.parse(JSON.stringify(HABITS));
+let tierNames = JSON.parse(localStorage.getItem('tierNames')) || { s: 'عادات أساسية', a: 'عادات ذات تأثير محدود', b: 'عادات لا تؤثر على النتائج', c: 'عادات خاطئة' };
+
+let dragItem = null, dragSource = null;
+let presIndex = 0, presOrder = [];
+
+// ─── RENDER ───
+function getHabitById(id) { return habits.find(h => h.id === id); }
+
+function createCard(habit) {
+  const div = document.createElement('div');
+  div.className = 'card';
+  div.draggable = true;
+  div.dataset.id = habit.id;
+  if (habit.tier) div.dataset.tier = habit.tier;
+  div.innerHTML = `<span class="card-emoji">${habit.emoji}</span><span class="card-name">${habit.name}</span>`;
+  
+  // Desktop drag
+  div.addEventListener('dragstart', onDragStart);
+  div.addEventListener('dragend', onDragEnd);
+
+  // Touch drag
+  div.addEventListener('touchstart', onTouchStart, { passive: true });
+  div.addEventListener('touchmove', onTouchMove, { passive: false });
+  div.addEventListener('touchend', onTouchEnd);
+
+  return div;
+}
+
+function render() {
+  const tiers = ['s', 'a', 'b', 'c'];
+  
+  // Update tier name inputs
+  tiers.forEach(t => {
+    const input = document.querySelector(`.tier-name-editable[data-tier="${t}"]`);
+    if (input) input.value = tierNames[t];
+  });
+
+  // Render pool
+  const pool = document.getElementById('pool');
+  pool.innerHTML = '';
+  const unclassified = habits.filter(h => !h.tier);
+  if (unclassified.length === 0) {
+    pool.innerHTML = '<div class="pool-empty"><div class="pool-empty-icon">✅</div>كل العادات تم تصنيفها!</div>';
+  } else {
+    unclassified.forEach(h => pool.appendChild(createCard(h)));
+  }
+  document.getElementById('poolCountLabel').textContent = `${unclassified.length} عادة`;
+
+  // Render tier cards
+  tiers.forEach(t => {
+    const container = document.getElementById(`cards-${t}`);
+    container.innerHTML = '';
+    const tierHabits = habits.filter(h => h.tier === t);
+    if (tierHabits.length === 0) {
+      container.innerHTML = '<div class="tier-empty">اسحب العادات هنا</div>';
+    } else {
+      tierHabits.forEach(h => container.appendChild(createCard(h)));
+    }
+    // Counts
+    document.getElementById(`count-${t}`).textContent = tierHabits.length;
+    document.getElementById(`stat-${t}`).textContent = tierHabits.length;
+  });
+
+  save();
+}
+
+// ─── DRAG & DROP (Desktop) ───
+function onDragStart(e) {
+  dragItem = this;
+  dragSource = this.closest('.tier-cards, .pool');
+  this.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', this.dataset.id);
+}
+
+function onDragEnd() {
+  this.classList.remove('dragging');
+  document.querySelectorAll('.tier, .pool-dropzone').forEach(el => el.classList.remove('drag-over'));
+}
+
+// Tier drop targets
+document.querySelectorAll('.tier').forEach(tier => {
+  tier.addEventListener('dragover', e => {
+    e.preventDefault();
+    tier.classList.add('drag-over');
+  });
+  tier.addEventListener('dragleave', e => {
+    if (!tier.contains(e.relatedTarget)) tier.classList.remove('drag-over');
+  });
+  tier.addEventListener('drop', e => {
+    e.preventDefault();
+    const id = parseInt(e.dataTransfer.getData('text/plain'));
+    const t = tier.dataset.tier;
+    const habit = getHabitById(id);
+    if (habit) {
+      habit.tier = t;
+      render();
+      showRipple(e);
+    }
+    tier.classList.remove('drag-over');
+  });
+});
+
+// Pool drop target
+const poolDropzone = document.getElementById('poolDropzone');
+poolDropzone.addEventListener('dragover', e => { e.preventDefault(); poolDropzone.classList.add('drag-over'); });
+poolDropzone.addEventListener('dragleave', e => { if (!poolDropzone.contains(e.relatedTarget)) poolDropzone.classList.remove('drag-over'); });
+poolDropzone.addEventListener('drop', e => {
+  e.preventDefault();
+  const id = parseInt(e.dataTransfer.getData('text/plain'));
+  const habit = getHabitById(id);
+  if (habit) { habit.tier = null; render(); }
+  poolDropzone.classList.remove('drag-over');
+});
+
+// ─── TOUCH DRAG ───
+let touchClone = null, touchHabitId = null;
+function onTouchStart(e) {
+  touchHabitId = parseInt(this.dataset.id);
+  const rect = this.getBoundingClientRect();
+  touchClone = this.cloneNode(true);
+  touchClone.classList.add('ghost');
+  touchClone.style.position = 'fixed';
+  touchClone.style.width = rect.width + 'px';
+  touchClone.style.pointerEvents = 'none';
+  touchClone.style.zIndex = '9999';
+  touchClone.style.left = rect.left + 'px';
+  touchClone.style.top = rect.top + 'px';
+  touchClone.style.transition = 'none';
+  document.body.appendChild(touchClone);
+  this.style.opacity = '0.3';
+}
+function onTouchMove(e) {
+  if (!touchClone) return;
+  e.preventDefault();
+  const t = e.touches[0];
+  touchClone.style.left = (t.clientX - 60) + 'px';
+  touchClone.style.top = (t.clientY - 30) + 'px';
+}
+function onTouchEnd(e) {
+  if (!touchClone) return;
+  const t = e.changedTouches[0];
+  touchClone.remove(); touchClone = null;
+  this.style.opacity = '';
+  const el = document.elementFromPoint(t.clientX, t.clientY);
+  const tier = el?.closest('.tier');
+  const pool = el?.closest('.pool-dropzone');
+  const habit = getHabitById(touchHabitId);
+  if (habit) {
+    if (tier) { habit.tier = tier.dataset.tier; render(); }
+    else if (pool) { habit.tier = null; render(); }
+  }
+}
+
+// ─── RIPPLE EFFECT ───
+function showRipple(e) {
+  const r = document.createElement('div');
+  r.className = 'ripple';
+  r.style.left = (e.clientX - 20) + 'px';
+  r.style.top = (e.clientY - 20) + 'px';
+  r.style.position = 'fixed';
+  document.body.appendChild(r);
+  setTimeout(() => r.remove(), 600);
+}
+
+// ─── PRESENTATION MODE ───
+const overlay       = document.getElementById('presentationOverlay');
+const presCard      = document.getElementById('presCard');
+const presEmoji     = document.getElementById('presEmoji');
+const presName      = document.getElementById('presName');
+const presBadge     = document.getElementById('presTierBadge');
+const presCounter   = document.getElementById('presCounter');
+const presBg        = document.getElementById('presBg');
+const presPlacement = document.getElementById('presPlacement');
+const placementBadge   = document.getElementById('placementBadge');
+const placementTitle   = document.getElementById('placementTitle');
+const placementMembers = document.getElementById('placementMembers');
+
+const tierColors = { s: '#22d3a0', a: '#f0c040', b: '#f07840', c: '#e03855' };
+const tierLabels = { s: '✅ عادة أساسية', a: '⚠️ تأثير محدود', b: '😐 لا تؤثر', c: '❌ عادة خاطئة' };
+const tierLetters = { s: 'S', a: 'A', b: 'b', c: 'C' };
+
+function updatePresCard() {
+  if (presOrder.length === 0) return;
+  const h = habits.find(h => h.id === presOrder[presIndex]);
+  if (!h) return;
+
+  presCard.style.animation = 'none';
+  presCard.offsetHeight;
+  presCard.style.animation = '';
+
+  presEmoji.textContent = h.emoji;
+  presName.textContent = h.name;
+  presCounter.textContent = `${presIndex + 1} / ${presOrder.length}`;
+
+  if (h.tier) {
+    const color = tierColors[h.tier];
+    presBadge.textContent = tierLabels[h.tier];
+    presBadge.style.cssText = `background:${color}22;color:${color};border:1px solid ${color}55;padding:6px 20px;border-radius:100px;font-size:12px;font-weight:700;letter-spacing:1px;display:flex;align-items:center;gap:6px;`;
+    presCard.style.borderColor = color + '35';
+    presCard.style.boxShadow = `0 32px 80px rgba(0,0,0,0.6), 0 0 60px ${color}18`;
+    presBg.style.background = `radial-gradient(ellipse 70% 60% at 50% 50%, ${color}09 0%, transparent 70%)`;
+  } else {
+    presBadge.textContent = '🎴 غير مصنفة';
+    presBadge.style.cssText = `background:rgba(110,231,247,0.08);color:#6ee7f7;border:1px solid rgba(110,231,247,0.2);padding:6px 20px;border-radius:100px;font-size:12px;font-weight:700;letter-spacing:1px;display:flex;align-items:center;gap:6px;`;
+    presCard.style.borderColor = 'rgba(255,255,255,0.12)';
+    presCard.style.boxShadow = '0 32px 80px rgba(0,0,0,0.6)';
+    presBg.style.background = 'radial-gradient(ellipse 70% 60% at 50% 50%, rgba(110,231,247,0.05) 0%, transparent 70%)';
+  }
+
+  // Show/hide placement panel
+  if (h.tier) {
+    showPlacement(h);
+  } else {
+    presPlacement.classList.remove('visible');
+  }
+}
+
+function showPlacement(h) {
+  const color  = tierColors[h.tier];
+  const letter = tierLetters[h.tier];
+  const name   = tierNames[h.tier];
+  const members = habits.filter(x => x.tier === h.tier);
+
+  // Badge
+  placementBadge.textContent = letter;
+  placementBadge.style.cssText = `background:${color}18;color:${color};border:1px solid ${color}40;font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;`;
+
+  // Update placement inner border
+  document.querySelector('.placement-inner').style.borderColor = color + '30';
+
+  // Title
+  placementTitle.textContent = name;
+  placementTitle.style.color = color;
+
+  // Members chips — show current + up to 3 others
+  placementMembers.innerHTML = '';
+  const others = members.filter(x => x.id !== h.id);
+  const MAX_SHOW = 3;
+
+  // Current habit chip (highlighted)
+  const currentChip = document.createElement('span');
+  currentChip.className = 'placement-chip current';
+  currentChip.style.borderColor = color + '55';
+  currentChip.style.color = color;
+  currentChip.style.background = color + '15';
+  currentChip.textContent = `${h.emoji} ${h.name}`;
+  placementMembers.appendChild(currentChip);
+
+  // Others
+  others.slice(0, MAX_SHOW).forEach(m => {
+    const chip = document.createElement('span');
+    chip.className = 'placement-chip';
+    chip.textContent = `${m.emoji} ${m.name}`;
+    placementMembers.appendChild(chip);
+  });
+
+  if (others.length > MAX_SHOW) {
+    const more = document.createElement('span');
+    more.className = 'placement-more';
+    more.textContent = `+${others.length - MAX_SHOW} أخرى`;
+    placementMembers.appendChild(more);
+  }
+
+  if (members.length === 1) {
+    const first = document.createElement('span');
+    first.className = 'placement-more';
+    first.textContent = '— أول عادة في هذا التصنيف';
+    placementMembers.appendChild(first);
+  }
+
+  // Animate in
+  presPlacement.classList.remove('visible');
+  requestAnimationFrame(() => requestAnimationFrame(() => presPlacement.classList.add('visible')));
+}
+
+document.getElementById('btnPresentation').addEventListener('click', () => {
+  presOrder = habits.map(h => h.id);
+  presIndex = 0;
+  updatePresCard();
+  updateVoteButtons();
+  updateVoteLabels();
+  overlay.classList.add('active');
+});
+
+document.getElementById('presClose').addEventListener('click', () => overlay.classList.remove('active'));
+
+document.getElementById('presNext').addEventListener('click', () => {
+  presIndex = (presIndex + 1) % presOrder.length;
+  presPlacement.classList.remove('visible');
+  setTimeout(() => { updatePresCard(); updateVoteButtons(); }, 80);
+});
+
+document.getElementById('presPrev').addEventListener('click', () => {
+  presIndex = (presIndex - 1 + presOrder.length) % presOrder.length;
+  presPlacement.classList.remove('visible');
+  setTimeout(() => { updatePresCard(); updateVoteButtons(); }, 80);
+});
+
+document.getElementById('presShuffle').addEventListener('click', () => {
+  presOrder = [...presOrder].sort(() => Math.random() - 0.5);
+  presIndex = 0;
+  presPlacement.classList.remove('visible');
+  setTimeout(() => { updatePresCard(); updateVoteButtons(); }, 80);
+  showToast('🔀 تم الخلط عشوائيًا');
+});
+
+// Reset single habit from presentation
+document.getElementById('presResetBtn').addEventListener('click', () => {
+  const h = habits.find(h => h.id === presOrder[presIndex]);
+  if (!h) return;
+  if (h.tier === null) { showToast('⚠️ العادة غير مصنفة أصلاً'); return; }
+  h.tier = null;
+  render();
+  updatePresCard();
+  updateVoteButtons();
+  presPlacement.classList.remove('visible');
+  showToast(`↺ تم إلغاء تصنيف: ${h.name}`);
+});
+
+// ─── VOTE BUTTONS ───
+function updateVoteLabels() {
+  document.getElementById('voteLabel-s').textContent = tierNames.s || 'عادات أساسية';
+  document.getElementById('voteLabel-a').textContent = tierNames.a || 'تأثير محدود';
+  document.getElementById('voteLabel-b').textContent = tierNames.b || 'لا تؤثر';
+  document.getElementById('voteLabel-c').textContent = tierNames.c || 'عادات خاطئة';
+}
+
+function updateVoteButtons() {
+  const h = habits.find(h => h.id === presOrder[presIndex]);
+  document.querySelectorAll('.vote-btn').forEach(btn => {
+    btn.classList.remove('voted');
+    if (h && btn.dataset.vote === h.tier) btn.classList.add('voted');
+  });
+}
+
+document.querySelectorAll('.vote-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const h = habits.find(h => h.id === presOrder[presIndex]);
+    if (!h) return;
+    const v = btn.dataset.vote;
+    const wasVoted = h.tier === v;
+    h.tier = wasVoted ? null : v;
+    render();
+    updatePresCard();
+    updateVoteButtons();
+    if (!wasVoted) showToast(`✅ ${h.emoji} ${h.name} → ${tierNames[v]}`);
+    else { presPlacement.classList.remove('visible'); showToast(`↩️ إلغاء تصنيف: ${h.name}`); }
+  });
+});
+
+// Keyboard shortcuts: 1=S, 2=A, 3=B, 4=C, Space/← →=navigate
+document.addEventListener('keydown', e => {
+  if (!overlay.classList.contains('active')) return;
+  const keyMap = { '1': 's', '2': 'a', '3': 'b', '4': 'c' };
+  if (keyMap[e.key]) {
+    document.querySelector(`.vote-btn[data-vote="${keyMap[e.key]}"]`)?.click();
+    return;
+  }
+  if (e.key === 'ArrowLeft' || e.key === ' ') {
+    e.preventDefault();
+    presIndex = (presIndex + 1) % presOrder.length;
+    presPlacement.classList.remove('visible');
+    setTimeout(() => { updatePresCard(); updateVoteButtons(); }, 80);
+  }
+  if (e.key === 'ArrowRight') {
+    presIndex = (presIndex - 1 + presOrder.length) % presOrder.length;
+    presPlacement.classList.remove('visible');
+    setTimeout(() => { updatePresCard(); updateVoteButtons(); }, 80);
+  }
+  if (e.key === 'r' || e.key === 'R') document.getElementById('presResetBtn')?.click();
+  if (e.key === 'Escape') overlay.classList.remove('active');
+});
+
+// ─── FULLSCREEN ───
+document.getElementById('btnFullscreen').addEventListener('click', () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+});
+
+// ─── RESET ───
+document.getElementById('btnReset').addEventListener('click', () => {
+  if (confirm('هل تريد إعادة تعيين جميع التصنيفات؟')) {
+    habits = JSON.parse(JSON.stringify(HABITS));
+    render();
+    showToast('↺ تم إعادة التعيين');
+  }
+});
+
+// ─── ADD HABIT ───
+document.getElementById('btnAddHabit').addEventListener('click', addHabit);
+document.getElementById('newHabitInput').addEventListener('keydown', e => { if (e.key === 'Enter') addHabit(); });
+
+function addHabit() {
+  const input = document.getElementById('newHabitInput');
+  const name = input.value.trim();
+  if (!name) return;
+  const emojis = ['🌟','💡','🎯','📌','🔖','✨','🧠','💪','🥗','🏃','🌿','🔬'];
+  const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+  const id = Date.now();
+  habits.push({ id, name, emoji, tier: null });
+  input.value = '';
+  render();
+  showToast(`✅ تمت إضافة: ${name}`);
+}
+
+// ─── TIER NAME EDITABLE ───
+document.querySelectorAll('.tier-name-editable').forEach(input => {
+  input.addEventListener('change', function() {
+    tierNames[this.dataset.tier] = this.value;
+    localStorage.setItem('tierNames', JSON.stringify(tierNames));
+  });
+});
+
+// ─── SAVE / LOAD ───
+function save() {
+  localStorage.setItem('habits', JSON.stringify(habits));
+}
+
+// ─── TOAST ───
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ─── INIT ───
+render();
+</script>
+</body>
+</html>
